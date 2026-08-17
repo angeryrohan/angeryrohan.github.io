@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Rohan · ML Compiler Engineer</title>
+<meta name="description" content="ML compiler engineer — MLIR/LLVM, GPU codegen, IR design." />
+
+<!-- ==========================================================
+     CONFIG — the ONLY block you edit in this file, once, ever.
+     Point it at the GitHub repo that holds your markdown content.
+     After this, you never touch HTML/CSS again: add a .md file
+     to projects/ or articles/ in that repo, commit, done.
+     ========================================================== -->
+<script>
+  window.PORTFOLIO_CONFIG = {
+    githubUser:   "angeryrohan",       // your GitHub username
+    contentRepo:  "portfolio-content", // repo holding the markdown
+    branch:       "main",
+    projectsPath: "projects",          // folder in that repo
+    articlesPath: "articles",          // folder in that repo
+  };
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
+
+<style>
+:root{
+  --bg:        #14161a;
+  --surface:   #1b1e24;
+  --line:      #2a2f38;
+  --ink:       #e6e8eb;
+  --ink-dim:   #9aa2ad;
+  --ink-faint: #6b7280;
+  --accent:    #e0a15e;
+  --accent-dim:#8a6a3e;
+  --sans: "Inter", system-ui, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, monospace;
+  --maxw: 720px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+::selection{background:var(--accent-dim);color:#fff}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+
+header{padding:88px 0 40px}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.08em;color:var(--accent);text-transform:uppercase;margin-bottom:18px}
+h1{font-family:var(--mono);font-weight:700;font-size:clamp(28px,5vw,40px);line-height:1.15;letter-spacing:-.01em}
+h1 .arrow{color:var(--accent);font-weight:400}
+.tagline{margin-top:18px;font-size:clamp(16px,2.4vw,19px);color:var(--ink-dim);max-width:60ch}
+.links{margin-top:26px;display:flex;flex-wrap:wrap;gap:20px;font-family:var(--mono);font-size:13px}
+.links a{color:var(--ink-dim);border-bottom:1px solid var(--line);padding-bottom:2px;transition:color .15s,border-color .15s}
+.links a:hover{color:var(--accent);border-color:var(--accent-dim)}
+
+section{padding:44px 0;border-top:1px solid var(--line)}
+.sec-label{font-family:var(--mono);font-size:13px;color:var(--ink-faint);margin-bottom:28px;letter-spacing:.02em}
+.sec-label .pct{color:var(--accent)}
+
+.exp{display:flex;flex-direction:column;gap:22px}
+.exp-item{display:grid;grid-template-columns:1fr;gap:4px}
+.exp-role{font-weight:600;font-size:16px}
+.exp-role .co{color:var(--accent)}
+.exp-meta{font-family:var(--mono);font-size:12px;color:var(--ink-faint)}
+.exp-desc{color:var(--ink-dim);font-size:15px;margin-top:4px}
+
+.cards{display:flex;flex-direction:column;gap:2px}
+.card{display:block;padding:22px;margin:0 -22px;border-radius:8px;transition:background .15s}
+.card:hover{background:var(--surface)}
+.card-top{display:flex;align-items:baseline;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.card-title{font-weight:600;font-size:17px}
+.card:hover .card-title{color:var(--accent)}
+.card-date{font-family:var(--mono);font-size:12px;color:var(--ink-faint);white-space:nowrap}
+.card-sum{color:var(--ink-dim);font-size:15px;margin-top:7px;max-width:62ch}
+.card-metric{display:inline-block;margin-top:11px;font-family:var(--mono);font-size:12px;color:var(--accent);border:1px solid var(--accent-dim);border-radius:4px;padding:3px 9px}
+.card-tags{margin-top:11px;display:flex;flex-wrap:wrap;gap:8px}
+.tag{font-family:var(--mono);font-size:11px;color:var(--ink-faint);background:var(--surface);border:1px solid var(--line);border-radius:4px;padding:2px 8px}
+
+.state{font-family:var(--mono);font-size:13px;color:var(--ink-faint);padding:8px 0}
+.state.err{color:var(--accent)}
+
+.reader{position:fixed;inset:0;background:var(--bg);z-index:50;overflow-y:auto;display:none}
+.reader.open{display:block}
+.reader-inner{max-width:var(--maxw);margin:0 auto;padding:64px 24px 120px}
+.reader-back{font-family:var(--mono);font-size:13px;color:var(--ink-dim);cursor:pointer;display:inline-flex;align-items:center;gap:8px;margin-bottom:36px;background:none;border:none}
+.reader-back:hover{color:var(--accent)}
+.reader-inner h1{font-size:clamp(24px,4vw,32px);margin-bottom:8px}
+.reader-meta{font-family:var(--mono);font-size:12px;color:var(--ink-faint);margin-bottom:36px}
+.prose{color:var(--ink);line-height:1.75}
+.prose h2{font-family:var(--mono);font-size:20px;margin:36px 0 14px;font-weight:600}
+.prose h3{font-family:var(--mono);font-size:16px;margin:28px 0 12px;font-weight:600;color:var(--ink-dim)}
+.prose p{margin:0 0 18px;color:var(--ink-dim)}
+.prose a{color:var(--accent);border-bottom:1px solid var(--accent-dim)}
+.prose ul,.prose ol{margin:0 0 18px 22px;color:var(--ink-dim)}
+.prose li{margin-bottom:8px}
+.prose code{font-family:var(--mono);font-size:.88em;background:var(--surface);border:1px solid var(--line);border-radius:4px;padding:1px 6px;color:var(--ink)}
+.prose pre{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:18px;overflow-x:auto;margin:0 0 20px}
+.prose pre code{background:none;border:none;padding:0;font-size:.85em;line-height:1.6}
+.prose blockquote{border-left:2px solid var(--accent-dim);padding-left:16px;color:var(--ink-faint);margin:0 0 18px}
+
+footer{padding:56px 0;border-top:1px solid var(--line);font-family:var(--mono);font-size:12px;color:var(--ink-faint)}
+
+@media (max-width:520px){
+  header{padding:60px 0 32px}
+  .card{margin:0 -16px;padding:18px 16px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <header>
+    <div class="eyebrow">ml compiler engineer</div>
+    <h1>Rohan<br><span class="arrow">&rarr;</span> lowering models to fast machine code</h1>
+    <p class="tagline">
+      I work on ML compilers &mdash; MLIR/LLVM, GPU codegen, and IR design.
+      I build in public: passes, benchmarks, and write-ups from the work.
+    </p>
+    <nav class="links">
+      <a href="https://github.com/angeryrohan" target="_blank" rel="noopener">github</a>
+      <a href="#" id="resume-link" target="_blank" rel="noopener">r&eacute;sum&eacute;</a>
+      <a href="https://www.linkedin.com/in/" target="_blank" rel="noopener">linkedin</a>
+      <a href="mailto:you@example.com">email</a>
+    </nav>
+  </header>
+
+  <section id="projects">
+    <div class="sec-label"><span class="pct">%</span>projects</div>
+    <div class="cards" id="projects-list">
+      <div class="state">loading projects&hellip;</div>
+    </div>
+  </section>
+
+  <section id="writing">
+    <div class="sec-label"><span class="pct">%</span>writing</div>
+    <div class="cards" id="articles-list">
+      <div class="state">loading articles&hellip;</div>
+    </div>
+  </section>
+
+  <section id="experience">
+    <div class="sec-label"><span class="pct">%</span>experience</div>
+    <div class="exp">
+      <div class="exp-item">
+        <div class="exp-role">ML Compiler Engineer <span class="co">&middot; SandLogic</span></div>
+        <div class="exp-meta">2025 &mdash; present &middot; Bengaluru</div>
+        <div class="exp-desc">
+          Compiler team &mdash; MLIR/IREE-based lowering and GPU codegen work.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    built in the open &middot; content lives in
+    <a href="https://github.com/angeryrohan/portfolio-content" style="color:var(--accent)">/portfolio-content</a>
+  </footer>
+
+</div>
+
+<div class="reader" id="reader">
+  <div class="reader-inner">
+    <button class="reader-back" id="reader-back">&larr; back</button>
+    <h1 id="reader-title"></h1>
+    <div class="reader-meta" id="reader-meta"></div>
+    <div class="prose" id="reader-body"></div>
+  </div>
+</div>
+
+<script>
+const CFG = window.PORTFOLIO_CONFIG;
+const md = window.marked;
+
+function apiDir(path){
+  return "https://api.github.com/repos/"+CFG.githubUser+"/"+CFG.contentRepo+"/contents/"+path+"?ref="+CFG.branch;
+}
+function rawUrl(path){
+  return "https://raw.githubusercontent.com/"+CFG.githubUser+"/"+CFG.contentRepo+"/"+CFG.branch+"/"+path;
+}
+
+function parseFrontmatter(text){
+  const m = text.match(/^---\s*\n([\s\S]*?)\n---\s*\n?([\s\S]*)$/);
+  if(!m) return { meta:{}, body:text };
+  const meta = {};
+  m[1].split("\n").forEach(function(line){
+    const i = line.indexOf(":");
+    if(i === -1) return;
+    meta[line.slice(0,i).trim()] = line.slice(i+1).trim();
+  });
+  return { meta:meta, body:(m[2]||"").trim() };
+}
+
+function fmtDate(s){
+  if(!s) return "";
+  const d = new Date(s);
+  if(isNaN(d)) return s;
+  return d.toLocaleDateString("en-US",{year:"numeric",month:"short"});
+}
+
+async function loadFolder(path){
+  const res = await fetch(apiDir(path));
+  if(!res.ok) throw new Error("GitHub API "+res.status);
+  const files = (await res.json()).filter(function(f){ return f.type==="file" && f.name.endsWith(".md"); });
+  const items = await Promise.all(files.map(async function(f){
+    const raw = await (await fetch(rawUrl(path+"/"+f.name))).text();
+    const parsed = parseFrontmatter(raw);
+    const meta = parsed.meta;
+    return {
+      slug: f.name.replace(/\.md$/,""),
+      title:   meta.title   || f.name,
+      date:    meta.date    || "",
+      summary: meta.summary || "",
+      metric:  meta.metric  || "",
+      link:    meta.link    || "",
+      tags:    (meta.tags||"").split(",").map(function(t){return t.trim();}).filter(Boolean),
+      body:    parsed.body,
+    };
+  }));
+  items.sort(function(a,b){ return (b.date||"").localeCompare(a.date||""); });
+  return items;
+}
+
+function projectCard(p){
+  const tags = p.tags.map(function(t){return '<span class="tag">'+t+'</span>';}).join("");
+  const metric = p.metric ? '<div class="card-metric">'+p.metric+'</div>' : "";
+  const inner =
+    '<div class="card-top"><span class="card-title">'+p.title+'</span>'+
+    (p.date ? '<span class="card-date">'+fmtDate(p.date)+'</span>' : "")+'</div>'+
+    (p.summary ? '<div class="card-sum">'+p.summary+'</div>' : "")+
+    metric+
+    (tags ? '<div class="card-tags">'+tags+'</div>' : "");
+  if(p.link){
+    return '<a class="card" href="'+p.link+'" target="_blank" rel="noopener">'+inner+'</a>';
+  }
+  return '<div class="card">'+inner+'</div>';
+}
+
+function articleCard(a){
+  const tags = a.tags.map(function(t){return '<span class="tag">'+t+'</span>';}).join("");
+  return '<div class="card" data-slug="'+a.slug+'" role="button" tabindex="0">'+
+    '<div class="card-top"><span class="card-title">'+a.title+'</span>'+
+    (a.date ? '<span class="card-date">'+fmtDate(a.date)+'</span>' : "")+'</div>'+
+    (a.summary ? '<div class="card-sum">'+a.summary+'</div>' : "")+
+    (tags ? '<div class="card-tags">'+tags+'</div>' : "")+'</div>';
+}
+
+let ARTICLES = [];
+const reader = document.getElementById("reader");
+function openReader(slug){
+  const a = ARTICLES.find(function(x){return x.slug===slug;});
+  if(!a) return;
+  document.getElementById("reader-title").textContent = a.title;
+  document.getElementById("reader-meta").textContent =
+    [fmtDate(a.date), a.tags.join(" · ")].filter(Boolean).join("  ·  ");
+  document.getElementById("reader-body").innerHTML = md.parse(a.body || "*No content yet.*");
+  reader.classList.add("open");
+  document.body.style.overflow = "hidden";
+  window.scrollTo(0,0);
+}
+function closeReader(){
+  reader.classList.remove("open");
+  document.body.style.overflow = "";
+}
+document.getElementById("reader-back").addEventListener("click", closeReader);
+document.addEventListener("keydown", function(e){ if(e.key==="Escape") closeReader(); });
+
+async function init(){
+  const pl = document.getElementById("projects-list");
+  try{
+    const projects = await loadFolder(CFG.projectsPath);
+    pl.innerHTML = projects.length
+      ? projects.map(projectCard).join("")
+      : '<div class="state">No projects yet — add a .md file to /'+CFG.projectsPath+'.</div>';
+  }catch(e){
+    pl.innerHTML = '<div class="state err">Couldn\'t load projects ('+e.message+'). Check the CONFIG block.</div>';
+  }
+
+  const al = document.getElementById("articles-list");
+  try{
+    ARTICLES = await loadFolder(CFG.articlesPath);
+    al.innerHTML = ARTICLES.length
+      ? ARTICLES.map(articleCard).join("")
+      : '<div class="state">No articles yet — add a .md file to /'+CFG.articlesPath+'.</div>';
+    al.querySelectorAll(".card").forEach(function(c){
+      const open = function(){ openReader(c.dataset.slug); };
+      c.addEventListener("click", open);
+      c.addEventListener("keydown", function(e){ if(e.key==="Enter"||e.key===" "){e.preventDefault();open();} });
+    });
+  }catch(e){
+    al.innerHTML = '<div class="state err">Couldn\'t load articles ('+e.message+'). Check the CONFIG block.</div>';
+  }
+
+  document.getElementById("resume-link").href = rawUrl("resume.pdf");
+}
+init();
+</script>
+</body>
+</html>
