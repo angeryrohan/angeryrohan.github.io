@@ -14,11 +14,11 @@
      ========================================================== -->
 <script>
   window.PORTFOLIO_CONFIG = {
-    githubUser:   "angeryrohan",       // your GitHub username
-    contentRepo:  "angeryrohan.github.io", // repo holding the markdown
+    githubUser:   "angeryrohan",         // your GitHub username
+    contentRepo:  "angeryrohan.github.io", // the SAME repo this site lives in
     branch:       "main",
-    projectsPath: "projects",          // folder in that repo
-    articlesPath: "articles",          // folder in that repo
+    projectsPath: "content/projects",    // folder inside this repo
+    articlesPath: "content/articles",    // folder inside this repo
   };
 </script>
 
@@ -125,8 +125,8 @@ footer{padding:56px 0;border-top:1px solid var(--line);font-family:var(--mono);f
     <nav class="links">
       <a href="https://github.com/angeryrohan" target="_blank" rel="noopener">github</a>
       <a href="#" id="resume-link" target="_blank" rel="noopener">r&eacute;sum&eacute;</a>
-      <a href="https://www.linkedin.com/in/rehunsi" target="_blank" rel="noopener">linkedin</a>
-      <a href="mailto:rohan.clevduct@gmail.com">email</a>
+      <a href="https://www.linkedin.com/in/" target="_blank" rel="noopener">linkedin</a>
+      <a href="mailto:you@example.com">email</a>
     </nav>
   </header>
 
@@ -159,7 +159,7 @@ footer{padding:56px 0;border-top:1px solid var(--line);font-family:var(--mono);f
 
   <footer>
     built in the open &middot; content lives in
-    <a href="https://github.com/angeryrohan/portfolio-content" style="color:var(--accent)">/portfolio-content</a>
+    <a href="https://github.com/angeryrohan/angeryrohan.github.io" style="color:var(--accent)">/content</a>
   </footer>
 
 </div>
@@ -296,7 +296,7 @@ async function init(){
     al.innerHTML = '<div class="state err">Couldn\'t load articles ('+e.message+'). Check the CONFIG block.</div>';
   }
 
-  document.getElementById("resume-link").href = rawUrl("resume.pdf");
+  document.getElementById("resume-link").href = rawUrl("content/resume.pdf");
 }
 init();
 </script>
