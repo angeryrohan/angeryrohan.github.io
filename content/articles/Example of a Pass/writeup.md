@@ -1,4 +1,7 @@
 ---
+title: Example of a Pass
+---
+
 title: What actually happens when MLIR lowers a matmul
 date: 2026-02-14
 summary: Tracing a single matmul from Linalg down to GPU code, one dialect at a time.
